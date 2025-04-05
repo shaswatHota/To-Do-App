@@ -1,0 +1,89 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import './App.css';
+
+function App() {
+  const [text, setText] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [isError, setIsError] = useState(false);
+
+
+  useEffect(() => {
+    axios.get("http://localhost:3000/")
+      .then(res => setTodos(res.data));
+  }, []);
+
+  const addTodo = () => {
+    if (!text.trim()) {
+      setIsError(true);
+      setTimeout(() => setIsError(false), 1000);
+      return;
+    }
+
+    axios.post("http://localhost:3000/", { text }, { headers: { "Content-Type": "application/json" } })
+      .then(res => {
+        setTodos([...todos, res.data]);
+        setText('');
+      })
+      .catch(error => console.error("Error:", error));
+  };
+
+  const toggleComplete = (id) => {
+    axios.patch(`http://localhost:3000/${id}`)
+      .then(res => setTodos(res.data));
+  };
+
+  const deleteFunc = (id) => {
+    axios.delete(`http://localhost:3000/${id}`)
+      .then(res => setTodos(res.data));
+  };
+
+  return (
+    <div className='grid grid-cols-6 h-screen w-screen bg-[#006749] text-gray-800'>
+      <div className='col-span-1'></div>
+      
+      <div className='col-span-4 flex flex-col items-center pt-10'>
+        <h1 className='text-3xl text-gray-100 mb-6 font-[Nunito] font-extrabold'>Todo</h1>
+        
+        <div className='flex w-full max-w-lg p-4 bg-[#e0e381] shadow-md rounded-xl'>
+          <input 
+            className={`w-full px-4 py-2 border rounded-l-xl focus:outline-none bg-white ${isError ? "border-red-500" : "border-gray-500"}`} 
+            value={text} 
+            placeholder="Add something..." 
+            onChange={(e) => setText(e.target.value)}
+          />
+          <div 
+            onClick={addTodo} 
+            className='px-6 py-2 bg-[#edb7d3] hover:bg-[] transition rounded-r-xl cursor-pointer border border-gray-500'>
+            Add
+          </div>
+        </div>
+        
+        {todos.length > 0 && (
+          <div className='w-full max-w-lg mt-6 p-4 bg-white shadow-md rounded-xl'>
+            {todos.map(todo => (
+              <div key={todo.id} className='flex justify-between items-center py-2 border-b last:border-b-0'>
+                <div 
+                  onClick={() => toggleComplete(todo.id)} 
+                  className={`cursor-pointer ${todo.completed ? "line-through text-gray-400" : "text-gray-800"}`}>
+                  {todo.text}
+                </div>
+                <div onClick={() => deleteFunc(todo.id)} className='p-2 rounded-full hover:bg-[#edb7d3] transition cursor-pointer'>
+                  <img 
+                    src="https://cdn-icons-png.flaticon.com/128/484/484662.png" 
+                    alt="Delete" 
+                    className="w-4 h-4"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      
+      <div className='col-span-1'></div>
+    </div>
+  );
+}
+
+export default App;

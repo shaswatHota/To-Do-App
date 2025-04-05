@@ -1,0 +1,165 @@
+import { useEffect, useState, useRef } from 'react';
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import StarOutlineIcon from '@mui/icons-material/StarOutline';
+import StarIcon from '@mui/icons-material/Star';
+import EditIcon from '@mui/icons-material/Edit';
+import BookIcon from '@mui/icons-material/Book';
+import axios from 'axios';
+import './App.css';
+
+function App() {
+  const [text, setText] = useState("");
+  const [todos, setTodos] = useState([]);
+  const [isError, setIsError] = useState(false);
+  const [openDropdownId, setOpenDropdownId] = useState(null);
+  const dropdownRef = useRef(null);
+  
+
+  useEffect(() => {
+    axios.get("http://localhost:3000/")
+      .then(res => setTodos(res.data));
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdownId(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const addTodo = () => {
+    if (!text.trim()) {
+      setIsError(true);
+      setTimeout(() => setIsError(false), 1000);
+      return;
+    }
+
+    axios.post("http://localhost:3000/", { text }, { headers: { "Content-Type": "application/json" } })
+      .then(res => {
+        setTodos([...todos, res.data]);
+        setText('');
+      })
+      .catch(error => console.error("Error:", error));
+  };
+
+
+
+  const toggleComplete = (id) => {
+    axios.patch(`http://localhost:3000/complete/${id}`)
+      .then(res => setTodos(res.data))
+      .catch(error => console.error("Error toggling complete:", error));
+  };
+
+  const deleteFunc = (id) => {
+    axios.delete(`http://localhost:3000/${id}`)
+      .then(res => setTodos(res.data));
+  };
+
+  const toggleFavorite = (id) => {
+
+    axios.patch(`http://localhost:3000/favorite/${id}`)
+      .then(res => setTodos(res.data))
+      .catch(error => console.error("Error toggling favorite:", error));
+  };
+
+  const toggleImportant = (id) => {
+    axios.patch(`http://localhost:3000/important/${id}`)
+      .then(res => setTodos(res.data))
+      .catch(error => console.error("Error toggling important:", error));
+  };
+
+  const toggleOptional = (id) => {
+    axios.patch(`http://localhost:3000/optional/${id}`)
+      .then(res => setTodos(res.data))
+      .catch(error => console.error("Error toggling optional:", error));
+  };
+  
+  return (
+    <div className='grid grid-cols-6 h-screen w-screen bg-[#f5e2ae] text-gray-800'>
+      <div className='col-span-1'></div>
+      <div className='col-span-4 flex flex-col items-center pt-10'>
+        <h1 className='text-3xl text-gray-400 mb-6 font-[Nunito] font-extrabold'>Todo</h1>
+        <div className='flex w-full max-w-xl p-4 rounded-2xl'>
+          <input 
+            className={`w-full px-4 py-2 shadow-md border rounded-xl focus:outline-none bg-gray-100 ${isError ? "border-red-500" : "border-none"}`} 
+            value={text} 
+            placeholder="Add something..." 
+            onChange={(e) => setText(e.target.value)}
+          />
+          <div 
+              onClick={addTodo} 
+              className="w-14 h-12 rounded-full flex justify-center items-center bg-white hover:bg-gray-200 transition cursor-pointer ">
+                <AddIcon className="w-5 h-5 text-gray-400 " />
+          </div>
+        </div>
+        {todos.length > 0 && (
+          <div className='w-full max-w-lg mt-6 p-4 bg-gray-100 shadow-md rounded-xl'>
+            {todos.map(todo => (
+              <div 
+                key={todo.id} 
+                className='flex justify-between items-start py-2 border-b border-b-gray-400 last:border-b-0 relative group'
+              >
+                <div 
+                  onClick={() => toggleComplete(todo.id)} 
+                  className={`cursor-pointer ${todo.completed ? "line-through text-gray-400" : "text-gray-800"} break-words whitespace-normal max-w-full`}
+                >
+                  <div className='flex'>
+                    <div>
+                    {todo.text}
+                    </div>
+                    <div>
+                    {todo.favorite && <StarIcon className='text-[#ffc010] ml-4' />}
+                    </div>
+                    <div>
+                    {(todo.important && !todo.optional)&& <div className='bg-[#C0392B] ml-4 px-2.5 rounded-full border  text-white'> I </div>}
+                    {todo.optional && <div className='bg-[#A0A0A0] ml-4 px-1.5 rounded-full border text-white'> O </div>}
+                    </div>
+
+                  </div>
+
+
+                    
+                </div>
+                <div className='flex item-center relative' ref={dropdownRef}>
+                  <div className='p-2 relative group inline'>
+                    <MoreHorizIcon 
+                      onClick={() => setOpenDropdownId(openDropdownId === todo.id ? null : todo.id)} 
+                      className='w-5 h-5 cursor-pointer opacity-0 group-hover:opacity-100 text-gray-500'
+                    />
+                  </div>
+                  {openDropdownId === todo.id && (
+                    <div className='absolute right-0 mt-2 w-32 bg-white  rounded-md shadow-lg z-50 '>
+                      <ul className='text-gray-600 rounded-md text-sm'>
+                        <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer'> <EditIcon /> Edit</li>
+                        <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer' onClick={() => toggleFavorite(todo.id)}>
+                        {todo.favorite ? <StarIcon className='text-yellow-300' /> : <StarOutlineIcon />}
+                        Favorite
+                        </li>
+                        <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer' onClick={()=> toggleImportant(todo.id)}> <BookIcon className='text-red-400'/> Important</li>
+                        <li className='px-4 py-2 hover:bg-gray-100 cursor-pointer' onClick={()=> toggleOptional(todo.id)}> <BookIcon className='text-gray-400'/> Optional</li>
+                      </ul>
+                    </div>
+                  )}
+                  <div onClick={() => deleteFunc(todo.id)} className='p-2 rounded-full transition cursor-pointer relative'>
+                    <DeleteOutlineIcon className='w-5 h-5 text-gray-500 hover:text-red-400 opacity-0 group-hover:opacity-100'/>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className='col-span-1'></div>
+    </div>
+  );
+}
+
+export default App;
