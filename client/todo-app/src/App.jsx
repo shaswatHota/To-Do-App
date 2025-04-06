@@ -7,6 +7,8 @@ import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import StarIcon from '@mui/icons-material/Star';
 import EditIcon from '@mui/icons-material/Edit';
 import BookIcon from '@mui/icons-material/Book';
+import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
+import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 import axios from 'axios';
 import './App.css';
 
@@ -36,6 +38,7 @@ function App() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
 
   const addTodo = () => {
     if (!text.trim()) {
@@ -89,7 +92,7 @@ function App() {
   };
 
   return (
-    <div className='grid grid-cols-6 h-full w-screen bg-[#f5e2ae] text-gray-800'>
+    <div className='grid grid-cols-6 min-h-screen w-screen pb-16 bg-gray-50 text-gray-800 '>
       <div className='col-span-1'></div>
 
       <div className='col-span-4 flex flex-col items-center pt-10'>
@@ -104,7 +107,7 @@ function App() {
           />
           <div
             onClick={addTodo}
-            className="w-14 h-12 rounded-full flex justify-center items-center bg-white hover:bg-gray-200 transition cursor-pointer"
+            className="w-14 h-12 rounded-full flex justify-center items-center bg-gray-100 hover:bg-gray-200 transition cursor-pointer"
           >
             <AddIcon className="w-5 h-5 text-gray-400" />
           </div>
@@ -118,20 +121,25 @@ function App() {
                 className='flex justify-between items-start py-2 border-b border-b-gray-400 last:border-b-0 relative group'
                 ref={(el) => (dropdownRefs.current[todo.id] = el)}
               >
+              <div className='flex items-center'>
                 <div
                   onClick={() => toggleComplete(todo.id)}
-                  className={`cursor-pointer ${todo.completed ? "line-through text-gray-400" : "text-gray-800"} break-words whitespace-normal max-w-full`}
                 >
-                  <div className='flex items-center flex-wrap gap-2'>
-                    <span>{todo.text}</span>
-                    {todo.favorite && <StarIcon className='text-[#ffc010]' />}
+                  <div className='flex items-center flex-wrap gap-2 pr-5'>
+                    {todo.completed?<CheckBoxOutlinedIcon/> :  <CheckBoxOutlineBlankOutlinedIcon className='text-gray-700'/>} 
+                    
+                  </div>
+                </div>
+              <div className={`cursor-pointer ${todo.completed ? "line-through text-gray-400" : "text-gray-800"} break-words whitespace-normal max-w-full`}>
+                  <span className='pr-5'>{todo.text}</span>
+                   <span className='pr-5'> {todo.favorite && <StarIcon className='text-yellow-400 ' />} </span>
                     {(todo.important && !todo.optional) && (
-                      <span className='bg-[#C0392B] px-2.5 py-1 rounded-full border text-white text-xs'>I</span>
+                      <span className='bg-red-500 px-2.5 py-1 rounded-full border text-white text-xs'>I</span>
                     )}
                     {todo.optional && (
                       <span className='bg-[#A0A0A0] px-2 py-1 rounded-full border text-white text-xs'>O</span>
                     )}
-                  </div>
+                </div>
                 </div>
 
                 <div className='flex items-center relative'>
@@ -152,7 +160,7 @@ function App() {
                           className='px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2'
                           onClick={() => toggleFavorite(todo.id)}
                         >
-                          {todo.favorite ? <StarIcon className='text-yellow-300' fontSize="small" /> : <StarOutlineIcon fontSize="small" />}
+                          {todo.favorite ? <StarIcon className='text-yellow-400' fontSize="small" /> : <StarOutlineIcon fontSize="small" />}
                           Favorite
                         </li>
                         <li
@@ -186,6 +194,7 @@ function App() {
 
       <div className='col-span-1'></div>
     </div>
+    
   );
 }
 
