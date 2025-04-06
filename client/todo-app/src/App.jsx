@@ -89,7 +89,7 @@ function App() {
   };
 
   return (
-    <div className='grid grid-cols-6 h-screen w-screen bg-[#f5e2ae] text-gray-800'>
+    <div className='grid grid-cols-6 h-full w-screen bg-[#f5e2ae] text-gray-800'>
       <div className='col-span-1'></div>
 
       <div className='col-span-4 flex flex-col items-center pt-10'>
