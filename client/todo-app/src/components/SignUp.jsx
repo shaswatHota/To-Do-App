@@ -24,7 +24,7 @@ const Signup = () => {
       if (res.ok) {
         setMessage(data.message); // "Account created successfully!"
         setLoading(false);
-        navigate('/login');
+        navigate('/signin');
       } else {
         throw new Error(data.message);
       }

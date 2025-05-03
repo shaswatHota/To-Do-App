@@ -70,79 +70,112 @@ app.post('/signin', async function (req, res) {
 })
 
 
-app.get('/todo', authenticateJwt,(req,res)=> res.json(todolist))
+app.get('/todo', authenticateJwt,async(req,res)=> {
+    try {
+        const todos = await TodoModel.find({ userId: req.user.id }); // ✅ Only this user's todos
+        res.json(todos);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to fetch todos" });
+      }
+});
 
-app.post('/todo', authenticateJwt,(req, res) => {
+app.post('/todo', authenticateJwt, async(req, res) => {
     try {
         const { text } = req.body;
-    const newTodo = { id: Date.now(), text, completed: false , favorite : false, important: false, optional: false };
-    todolist.push(newTodo);
-    res.json(newTodo);
-    console.log(newTodo);
+        const newTodo = await TodoModel.create({
+            text,
+            completed: false,
+            favorite: false,
+            important: false,
+            optional: false,
+            userId: req.user.id // ✅ Correct: Uses the logged-in user's _id from JWT
+        });
+        res.json(newTodo);
     } catch (error) {
-        
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({ error: "Failed to save todo" });
     }
 });
 
-app.patch('/complete/:id', (req, res) => {
+app.patch('/complete/:id',async (req, res) => {
     try {
         const { id } = req.params;
-        todolist = todolist.map(todo =>
-            todo.id == id ? { ...todo, completed: !todo.completed } : todo
-        );
-        res.json(todolist);
-        console.log("✔️ Toggled completed:", id);
-    } catch (error) {
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+        const todo = await TodoModel.findOne({ 
+          _id: id, 
+          userId: req.user.id // ✅ Verify the todo belongs to the user
+        });
+        if (!todo) return res.status(404).json({ error: "Todo not found" });
+    
+        todo.completed = !todo.completed;
+        await todo.save();
+        res.json(todo);
+      } catch (error) {
+        res.status(500).json({ error: "Failed to update todo" });
+      }
 });
 
 // ✅ Toggle only `favorite`
-app.patch('/favorite/:id', (req, res) => {
+app.patch('/favorite/:id', async(req, res) => {
     try {
         const { id } = req.params;
-        todolist = todolist.map(todo =>
-            todo.id == id ? { ...todo, favorite: !todo.favorite } : todo
-        );
-        res.json(todolist);
+       const todo = TodoModel.findOne({
+        _id: id, 
+          userId: req.user.id 
+       });
+       if (!todo) return res.status(404).json({ error: "Todo not found" });
+       todo.favorite = !todo.favorite;
+       await todo.save();
+       res.json(todo);
         console.log("⭐ Toggled favorite:", id);
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
-app.patch('/important/:id', (req, res) => {
+app.patch('/important/:id', async(req, res) => {
     try {
         const { id } = req.params;
-        todolist = todolist.map(todo =>
-            todo.id == id ? { ...todo, important: !todo.important } : todo
-        );
-        res.json(todolist);
-        console.log(" Toggled important:", id);
+       const todo = TodoModel.findOne({
+        _id: id, 
+          userId: req.user.id 
+       });
+       if (!todo) return res.status(404).json({ error: "Todo not found" });
+       todo.important = !todo.important;
+       await todo.save();
+       res.json(todo);
+        console.log("⭐ Toggled Important:", id);
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
-app.patch('/optional/:id', (req, res) => {
+app.patch('/optional/:id', async(req, res) => {
     try {
         const { id } = req.params;
-        todolist = todolist.map(todo =>
-            todo.id == id ? { ...todo, optional: !todo.optional } : todo
-        );
-        res.json(todolist);
-        console.log(" Toggled optional:", id);
+       const todo = TodoModel.findOne({
+        _id: id, 
+          userId: req.user.id 
+       });
+       if (!todo) return res.status(404).json({ error: "Todo not found" });
+       todo.optional = !todo.optional;
+       await todo.save();
+       res.json(todo);
+        console.log("⭐ Toggled optional:", id);
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
-app.delete('/:id', (req, res) => {
+app.delete('/:id', async(req, res) => {
     try {
         const { id } = req.params;
-        todolist = todolist.filter(todo => todo.id != id );
-        res.json(todolist);
+        const deletedTodo =TodoModel.findOneAndDelete({
+            _id: id, 
+            userId: req.user.id 
+        });
+        if (!deletedTodo) return res.status(404).json({ error: "Todo not found" });
+
+        const todos = await TodoModel.find({ userId: req.user.id });
+        res.json(todos);
     } catch (error) {
         
         res.status(500).json({ error: "Internal Server Error" });
