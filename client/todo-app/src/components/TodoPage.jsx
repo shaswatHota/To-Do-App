@@ -9,7 +9,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import BookIcon from '@mui/icons-material/Book';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+import api from '../services/api'
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 function TodoPage() {
@@ -18,12 +20,14 @@ function TodoPage() {
   const [isError, setIsError] = useState(false);
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const dropdownRefs = useRef({}); // hold multiple refs for each todo
+  const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:3000/")
+    api.get("http://localhost:3000/todo")
       .then(res => setTodos(res.data))
       .catch(err => console.error("Fetch error:", err));
   }, []);
+  
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -47,7 +51,7 @@ function TodoPage() {
       return;
     }
 
-    axios.post("http://localhost:3000/", { text }, { headers: { "Content-Type": "application/json" } })
+    api.post("http://localhost:3000/todo", { text }, { headers: { "Content-Type": "application/json" } })
       .then(res => {
         setTodos(prev => [...prev, res.data]);
         setText('');
@@ -62,31 +66,31 @@ function TodoPage() {
   };
 
   const toggleComplete = (id) => {
-    axios.patch(`http://localhost:3000/complete/${id}`)
+    api.patch(`http://localhost:3000/complete/${id}`)
       .then(updateTodoList)
       .catch(err => console.error("Toggle complete error:", err));
   };
 
   const deleteFunc = (id) => {
-    axios.delete(`http://localhost:3000/${id}`)
+    api.delete(`http://localhost:3000/${id}`)
       .then(updateTodoList)
       .catch(err => console.error("Delete error:", err));
   };
 
   const toggleFavorite = (id) => {
-    axios.patch(`http://localhost:3000/favorite/${id}`)
+    api.patch(`http://localhost:3000/favorite/${id}`)
       .then(updateTodoList)
       .catch(err => console.error("Favorite toggle error:", err));
   };
 
   const toggleImportant = (id) => {
-    axios.patch(`http://localhost:3000/important/${id}`)
+    api.patch(`http://localhost:3000/important/${id}`)
       .then(updateTodoList)
       .catch(err => console.error("Important toggle error:", err));
   };
 
   const toggleOptional = (id) => {
-    axios.patch(`http://localhost:3000/optional/${id}`)
+    api.patch(`http://localhost:3000/optional/${id}`)
       .then(updateTodoList)
       .catch(err => console.error("Optional toggle error:", err));
   };
