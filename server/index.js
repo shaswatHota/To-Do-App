@@ -96,7 +96,7 @@ app.post('/todo', authenticateJwt, async(req, res) => {
     }
 });
 
-app.patch('/complete/:id',async (req, res) => {
+app.patch('/complete/:id', authenticateJwt,async (req, res) => {
     try {
         const { id } = req.params;
         const todo = await TodoModel.findOne({ 
@@ -107,6 +107,7 @@ app.patch('/complete/:id',async (req, res) => {
     
         todo.completed = !todo.completed;
         await todo.save();
+        console.log("Updated todo:", todo);
         res.json(todo);
       } catch (error) {
         res.status(500).json({ error: "Failed to update todo" });
@@ -114,10 +115,10 @@ app.patch('/complete/:id',async (req, res) => {
 });
 
 // ✅ Toggle only `favorite`
-app.patch('/favorite/:id', async(req, res) => {
+app.patch('/favorite/:id',authenticateJwt, async(req, res) => {
     try {
         const { id } = req.params;
-       const todo = TodoModel.findOne({
+       const todo = await TodoModel.findOne({
         _id: id, 
           userId: req.user.id 
        });
@@ -131,10 +132,10 @@ app.patch('/favorite/:id', async(req, res) => {
     }
 });
 
-app.patch('/important/:id', async(req, res) => {
+app.patch('/important/:id',authenticateJwt, async(req, res) => {
     try {
         const { id } = req.params;
-       const todo = TodoModel.findOne({
+       const todo = await TodoModel.findOne({
         _id: id, 
           userId: req.user.id 
        });
@@ -148,10 +149,10 @@ app.patch('/important/:id', async(req, res) => {
     }
 });
 
-app.patch('/optional/:id', async(req, res) => {
+app.patch('/optional/:id',authenticateJwt, async(req, res) => {
     try {
         const { id } = req.params;
-       const todo = TodoModel.findOne({
+       const todo = await TodoModel.findOne({
         _id: id, 
           userId: req.user.id 
        });
@@ -165,10 +166,10 @@ app.patch('/optional/:id', async(req, res) => {
     }
 });
 
-app.delete('/:id', async(req, res) => {
+app.delete('/delete/:id',authenticateJwt, async(req, res) => {
     try {
         const { id } = req.params;
-        const deletedTodo =TodoModel.findOneAndDelete({
+        const deletedTodo = await TodoModel.findOneAndDelete({
             _id: id, 
             userId: req.user.id 
         });
