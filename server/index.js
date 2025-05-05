@@ -10,7 +10,6 @@ const { authenticateJwt } = require('./middleware/auth');
 
 mongoose.connect('mongodb+srv://admin:DglBOA6An0PTKfEc@cluster0.3o1o3.mongodb.net/todo-app-database')
 
-let todolist = [];
 
 app.use(cors());
 app.use(express.json()); 
