@@ -9,9 +9,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import BookIcon from '@mui/icons-material/Book';
 import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
 import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+
+
 import api from '../services/api'
-import axios from 'axios';
+
+
 import { useNavigate } from 'react-router-dom';
+import Sidebar from '../components/Sidebar';
 
 
 function TodoPage() {
@@ -21,6 +25,7 @@ function TodoPage() {
   const [openDropdownId, setOpenDropdownId] = useState(null);
   const dropdownRefs = useRef({}); // hold multiple refs for each todo
   const navigate = useNavigate();
+  
 
   useEffect(() => {
     api.get("http://localhost:3000/todo")
@@ -118,9 +123,10 @@ const deleteFunc = (id) => {
   };
 
   return (
-    <div className='grid grid-cols-6 min-h-screen w-screen pb-16 bg-gray-50 text-gray-800 '>
-      <div className='col-span-1'></div>
-
+    <div className='min-h-screen w-screen bg-[#c9cfdb] text-gray-800 '>
+      
+      
+        {/* Main Content */}
       <div className='col-span-4 flex flex-col items-center pt-10'>
         <h1 className='text-3xl text-gray-400 mb-6 font-[Nunito] font-extrabold'>Todo</h1>
 
@@ -218,7 +224,6 @@ const deleteFunc = (id) => {
         )}
       </div>
 
-      <div className='col-span-1'></div>
     </div>
     
   );
