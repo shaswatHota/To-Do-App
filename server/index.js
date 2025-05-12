@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = "sh@sw@th04a";
 const bcryptjs = require('bcryptjs');
 const { authenticateJwt } = require('./middleware/auth');
+const geminiRoutes = require('./routes/gemini');
 
 mongoose.connect('mongodb+srv://admin:DglBOA6An0PTKfEc@cluster0.3o1o3.mongodb.net/todo-app-database')
 
@@ -95,6 +96,9 @@ app.post('/todo', authenticateJwt, async(req, res) => {
     }
 });
 
+app.use('/api/gemini',authenticateJwt,geminiRoutes);
+
+
 app.patch('/complete/:id', authenticateJwt,async (req, res) => {
     try {
         const { id } = req.params;
@@ -181,5 +185,6 @@ app.delete('/delete/:id',authenticateJwt, async(req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 app.listen(3000, () => console.log("Server is running on port 3000"));
