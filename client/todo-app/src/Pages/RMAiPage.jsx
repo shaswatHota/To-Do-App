@@ -37,14 +37,11 @@ const RoadMapAI = () => {
     try {
       // Send the prompt using your authenticated Axios instance
       await api.post('/api/gemini/roadmapai', { prompt: text });
-      const token = localStorage.getItem('token'); 
-
+     
+        const token = localStorage.getItem("token");
       // Establish the EventSource connection *after* successfully sending the prompt
-      const newEventSource = new EventSource('http://localhost:3000/api/gemini/roadmapai', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}` // Adjust token if needed
-        }
-      });
+      const newEventSource = new EventSource(`http://localhost:3000/api/gemini/roadmapai?token=${token}`);
+      
 
       setEventSource(newEventSource);
 

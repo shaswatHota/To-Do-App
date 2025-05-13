@@ -7,11 +7,13 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-let eventSourceConnections = [];
-
+const userSSEConnections = new Map();
 router.post("/roadmapai", async (req, res) => {
-  const { prompt } = req.body;
-  console.log("📥 Received prompt:", prompt);
+  const userId = req.user ? req.user._id : null;  // Make sure req.user is not undefined
+  console.log(`📥 [${userId}] Prompt received: ${req.body.prompt}`);
+  
+  const { prompt } =req.body;
+  console.log(`📥 [${userId}] Prompt received: ${prompt}`);
 
   try {
     const result = await model.generateContent({
@@ -21,12 +23,16 @@ router.post("/roadmapai", async (req, res) => {
     const text = result.response.text();
     console.log("✅ Gemini response:", text);
 
+    const clientRes = userSSEConnections.get(userId);
     // Simulating SSE: Emit result to clients listening to SSE
-    eventSourceConnections.forEach((client) => {
-      client.write(`data: ${JSON.stringify({ roadmap: text })}\n\n`);
-    });
+    if(clientRes) {
+      clientRes.write(`data: ${JSON.stringify({ roadmap: text })}\n\n`);
+    }else {
+      console.warn(`⚠️ [${userId}] No SSE connection to send data`);
+    }
 
-    res.json({ roadmap: text }); // You can return an immediate response if necessary
+
+    res.json({success : true }); // You can return an immediate response if necessary
   } catch (error) {
     console.error("❌ Gemini Error:", error);
     res.status(500).json({ error: "Something went wrong with Gemini" });
@@ -35,6 +41,10 @@ router.post("/roadmapai", async (req, res) => {
 
 // SSE GET endpoint
 router.get("/roadmapai", (req, res) => {
+  const userId = req.user._id;
+
+   console.log(`📥 [${userId}] Connected to SSE`);
+
   // Set headers for SSE
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
@@ -43,11 +53,12 @@ router.get("/roadmapai", (req, res) => {
   // Keep the connection alive and send the data in real-time
   res.flushHeaders();
 
-  eventSourceConnections.push(res);
+  userSSEConnections.set(userId,res);
 
   // Clean up connections when the client closes
-  req.on("close", () => {
-    eventSourceConnections = eventSourceConnections.filter((client) => client !== res);
+   req.on("close", () => {
+    console.log(`❌ [${userId}] SSE connection closed`);
+    userSSEConnections.delete(userId);
   });
 });
 
