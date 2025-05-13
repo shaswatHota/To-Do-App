@@ -35,8 +35,8 @@ const RoadMapAI = () => {
     }
 
     try {
-      // Send the prompt using your authenticated Axios instance
-      await api.post('/api/gemini/roadmapai', { prompt: text });
+      
+      
      
         const token = localStorage.getItem("token");
       // Establish the EventSource connection *after* successfully sending the prompt
@@ -70,6 +70,8 @@ const RoadMapAI = () => {
       };
 
       setText(''); // Clear input after sending
+
+      await api.post('/api/gemini/roadmapai', { prompt: text });
     } catch (error) {
       console.error("Error sending prompt:", error);
       setStreamError("Failed to send prompt to AI.");
