@@ -1,6 +1,7 @@
 import { IoSendOutline } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import api from "../services/api"; // Your Axios instance
+import ReactMarkdown from "react-markdown";
 
 const RoadMapAI = () => {
   const [text, setText] = useState('');
@@ -50,14 +51,32 @@ const RoadMapAI = () => {
       };
 
       newEventSource.onmessage = (event) => {
-        const chunk = event.data;
-        console.log('Received chunk:', chunk);
-        setAiResponse((prevResponse) => prevResponse + chunk);
+
+        try {
+            const chunk = JSON.parse(event.data);
+        if(chunk.done){
+          console.log('Received chunk:', chunk);
+          setLoading(false);
+           newEventSource.close(); // ✅ Clean up
+          setEventSource(null);
+
+        }else if(chunk.roadmap){
+          setAiResponse((prev) => prev + chunk.roadmap);
+        }
+          
+        } catch (err) {
+          console.error('⚠️ Failed to parse SSE message:', event.data);
+        }
+        
+        
       };
 
       newEventSource.onerror = (error) => {
         console.error('SSE error:', error);
-        setStreamError('Failed to receive AI response.');
+        if(!aiResponse){
+          setStreamError('Failed to receive AI response.');
+        }
+        
         setLoading(false);
         if (newEventSource) {
           newEventSource.close();
@@ -104,7 +123,7 @@ const RoadMapAI = () => {
       {aiResponse && (
         <div className="mt-4 p-4 border rounded-md shadow-sm bg-gray-50">
           <h2>AI Response:</h2>
-          <p>{aiResponse}</p>
+          <ReactMarkdown>{aiResponse}</ReactMarkdown>
         </div>
       )}
     </div>

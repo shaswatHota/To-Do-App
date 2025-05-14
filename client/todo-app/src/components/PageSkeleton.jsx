@@ -1,19 +1,5 @@
-import { useEffect, useState, useRef } from 'react';
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import StarOutlineIcon from '@mui/icons-material/StarOutline';
-import StarIcon from '@mui/icons-material/Star';
-import EditIcon from '@mui/icons-material/Edit';
-import BookIcon from '@mui/icons-material/Book';
-import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
-import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
+import { useState} from 'react';
 import {TbLayoutSidebarLeftCollapseFilled, TbLayoutSidebarLeftExpand } from "react-icons/tb";
-
-import api from '../services/api'
-
-
 import { Outlet, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 
@@ -32,7 +18,7 @@ function PageSkeleton() {
       </div>
         {/* Main Content */}
          <div
-          className={` p-2 text-gray-500 fixed top-2 left-48 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-44'} hover:cursor-pointer`}
+          className={` absolute p-2 text-gray-500 top-2 left-48 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-44'} hover:cursor-pointer`}
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <TbLayoutSidebarLeftCollapseFilled className='w-6 h-6' />  : <TbLayoutSidebarLeftExpand  className='w-6 h-6'/> }

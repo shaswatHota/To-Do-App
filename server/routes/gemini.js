@@ -39,28 +39,47 @@ router.post("/roadmapai", async (req, res) => {
   
   const { prompt } =req.body;
   console.log(`📥 [${userId}] Prompt received: ${prompt}`);
+  const sysPrompt = `
+                    You are a helpful assistant that returns structured, readable responses.
+                    Please format your answer in Markdown, and use emoji in some headers 
+                    and talk as much like a human as possible . 
+                    dont give answers like this all the time , do so if necessary 
+                    you can deviate from the structure and do your own thing if you want.
+                    use emoji according to a 
+                    particular color pallet.
+                
+                    Here's what I want:
+                    - Add an optional title if it helps.
+                    - Use bold text (**) for key points.
+                    - Use bullet points or numbered lists when listing.
+                    - Add headers using Markdown syntax (like ## or ###) when needed.
+                    - Do not cut off sentences.
 
-  try {
-    const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
+                    User prompt: ${prompt}`;
+
+  
+    const result = await model.generateContentStream({
+      contents: [{ role: "user", parts: [{ text: sysPrompt }] }],
     });
-
-    const text = result.response.text();
-    console.log("✅ Gemini response:", text);
-
     const clientRes = userSSEConnections.get(userId);
-    // Simulating SSE: Emit result to clients listening to SSE
-    if(clientRes) {
-      clientRes.write(`data: ${JSON.stringify({ roadmap: text })}\n\n`);
-    }else {
+    if(!clientRes){
       console.warn(`⚠️ [${userId}] No SSE connection to send data`);
+       return res.status(404).json({ error: "No client connection" });
     }
-    clientRes.end();
 
-    res.json({success : true }); // You can return an immediate response if necessary
+  try{
+
+      for await(const chunk of result.stream){
+        const textPart = chunk.text(); 
+        clientRes.write(`data: ${JSON.stringify({ roadmap: textPart })}\n\n`);
+      }
+      clientRes.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+      clientRes.end();
+    
   } catch (error) {
-    console.error("❌ Gemini Error:", error);
-    res.status(500).json({ error: "Something went wrong with Gemini" });
+     console.error("❌ Streaming error:", err);
+    clientRes.write(`data: ${JSON.stringify({ error: "Streaming failed" })}\n\n`);
+    clientRes.end();
   }
 });
 
