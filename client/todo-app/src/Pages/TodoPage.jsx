@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import Button from "@mui/material/Button";
+
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -15,10 +15,10 @@ import api from '../services/api'
 
 
 import { useNavigate } from 'react-router-dom';
-import Sidebar from '../components/Sidebar';
 
 
 function TodoPage() {
+  
   const [text, setText] = useState("");
   const [todos, setTodos] = useState([]);
   const [isError, setIsError] = useState(false);
@@ -123,11 +123,11 @@ const deleteFunc = (id) => {
   };
 
   return (
-    <div className='min-h-screen w-screen bg-[#c9cfdb] text-gray-800 '>
+    <div className='min-h-screen w-full bg-[#c9cfdb] text-gray-800 '>
       
       
         {/* Main Content */}
-      <div className='col-span-4 flex flex-col items-center pt-10'>
+      <div className=' flex flex-col items-center pt-10'>
         <h1 className='text-3xl text-gray-400 mb-6 font-[Nunito] font-extrabold'>Todo</h1>
 
         <div className='flex w-full max-w-xl p-4 rounded-2xl'>

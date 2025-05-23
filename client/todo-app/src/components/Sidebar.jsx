@@ -4,8 +4,12 @@ import CLink from "./CLink";
 const Sidebar = () => {
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-500 m-4">Sidebar</h2>
+      <div className='flex '>
 
+        <h2 className="text-2xl pl-18 font-bold text-gray-500 m-5 ">Sidebar</h2>
+
+      </div>
+      
       <ul className="hover:cursor-pointer text-gray-600">
         <li>
           <CLink
