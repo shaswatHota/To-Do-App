@@ -67,6 +67,7 @@ const Sidebar = () => {
             Profile
           </CLink>
         </li>
+        
       </ul>
     </div>
   );
