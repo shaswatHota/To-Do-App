@@ -99,6 +99,32 @@ app.post('/todo', authenticateJwt, async(req, res) => {
 app.use('/api/gemini',authenticateJwt,geminiRoutes);
 
 
+app.patch('/edit/:id', authenticateJwt, async(req,res)=>{
+    
+    try {
+        const {id} = req.params;
+        const {updates, options} = req.body;
+        const editedTodo = await TodoModel.findOneAndUpdate(
+            {
+            _id: id,
+            userId: req.user.id
+            },
+            updates,
+            {
+                ...options
+            }
+        );
+        if(!editedTodo) return res.status(404).json({error :"Todo not found"})
+
+        res.json(editedTodo);
+
+
+    } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+
+})
+
 app.patch('/complete/:id', authenticateJwt,async (req, res) => {
     try {
         const { id } = req.params;

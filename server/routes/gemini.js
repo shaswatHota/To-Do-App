@@ -60,6 +60,8 @@ router.post("/roadmapai", async (req, res) => {
                     - Use bullet points or numbered lists when listing.
                     - Add headers using Markdown syntax (like ## or ###) when needed.
                     - Do not cut off sentences.
+                    - If someone prompts something other than learning something or roadmap of something
+                      just say i am not supposed to answer that i am a roadmap ai ask something you want to learn
 
                     User prompt: ${prompt}`;
 

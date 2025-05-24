@@ -100,6 +100,11 @@ const RoadMapAI = () => {
       }
     }
   };
+  const handleEnterKey = (e) => {
+      if (e.key === 'Enter') {
+        sendPrompt();
+      }
+      };
 
   return (
     <div>
@@ -109,6 +114,7 @@ const RoadMapAI = () => {
           value={text}
           placeholder="Learn something..."
           onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleEnterKey}
         />
         <div
           onClick={sendPrompt}
