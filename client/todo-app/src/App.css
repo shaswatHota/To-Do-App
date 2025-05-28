@@ -2,21 +2,29 @@
 @import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Patrick+Hand&display=swap");
 @import "tailwindcss";
 
-.no-scrollbar::-webkit-scrollbar{
-  display: none;
-  
+
+
+
+::-webkit-scrollbar {
+    width: 10px;
 }
 
 
-/* 
-#root {
-  background-color: aqua;
-  max-width: full;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-} */
+::-webkit-scrollbar-track {
+    background: #b9c2d1;
+    border-radius: 5px;
+}
 
+
+::-webkit-scrollbar-thumb {
+    background: #ff6b6b;
+    border-radius: 5px;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5a616e;
+}
 
 
 

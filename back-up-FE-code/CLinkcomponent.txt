@@ -1,0 +1,75 @@
+import '../App.css';
+import CLink from "./CLink";
+
+const Sidebar = () => {
+  return (
+    <div>
+      <h2 className="text-2xl font-bold m-4">Sidebar</h2>
+
+      <ul className="hover:cursor-pointer text-black">
+        <li>
+          <CLink
+            to="/home"
+            className={({ isActive }) =>
+              `mb-2 pl-5 block hover:bg-[#e1e3e6] ${isActive ? "bg-[#e1e3e6]" : ""}`
+            }
+          >
+            Home
+          </CLink>
+        </li>
+        <li>
+          <CLink
+            to="/goal"
+            className={({ isActive }) =>
+              `mb-2 pl-5 block hover:bg-[#e1e3e6] ${isActive ? "bg-[#e1e3e6]" : ""}`
+            }
+          >
+            Goal
+          </CLink>
+        </li>
+        <li>
+          <CLink
+            to="/roadmapai"
+            className={({ isActive }) =>
+              `mb-2 pl-5 block hover:bg-[#e1e3e6] ${isActive ? "bg-[#e1e3e6]" : ""}`
+            }
+          >
+            Road Map AI
+          </CLink>
+        </li>
+        <li>
+          <CLink
+            to="/todo"
+            className={({ isActive }) =>
+              `mb-2 pl-5 block hover:bg-[#e1e3e6] ${isActive ? "bg-[#e1e3e6]" : ""}`
+            }
+          >
+            Todo
+          </CLink>
+        </li>
+        <li>
+          <CLink
+            to="/settings"
+            className={({ isActive }) =>
+              `mb-2 pl-5 block hover:bg-[#e1e3e6] ${isActive ? "bg-[#e1e3e6]" : ""}`
+            }
+          >
+            Settings
+          </CLink>
+        </li>
+        <li>
+          <CLink
+            to="/profile"
+            className={({ isActive }) =>
+              `mb-2 pl-5 block hover:bg-[#e1e3e6] ${isActive ? "bg-[#e1e3e6]" : ""}`
+            }
+          >
+            Profile
+          </CLink>
+        </li>
+      </ul>
+    </div>
+  );
+};
+
+export default Sidebar;

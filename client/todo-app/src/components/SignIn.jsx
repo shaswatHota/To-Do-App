@@ -8,7 +8,7 @@ const Signin = () => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // For redirection
+  const navigate = useNavigate(); 
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -35,7 +35,7 @@ const Signin = () => {
   return (
     <div className="h-screen w-screen flex justify-center items-center bg-gray-100">
       <div className="w-full max-w-sm p-6 bg-white shadow-lg rounded-lg">
-        <h2 className="text-center text-2xl font-semibold mb-4">SignIn</h2>
+        <h2 className="text-center text-2xl text-black font-semibold mb-4">Sign In</h2>
         <form onSubmit={handleSignIn}>
           <div className="space-y-4 text-black">
             <input
@@ -52,18 +52,19 @@ const Signin = () => {
               required
               className="w-full p-2 border border-gray-300 rounded"
             />
-            <button
+            <div
               type="submit"
-              className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="flex justify-center hover:cursor-pointer w-full p-2 text-white rounded bg-gradient-to-r from-[#FD6A5E] to-[#FF8A7A]"
+              onClick={handleSignIn}
             >
               {loading ? (
-                <RefreshIcon className="animate-spin"/> // Spinner icon while loading
+                <RefreshIcon className="animate-spin"/> 
               ) : (
                 "SignIn"
               )}
              
-            </button>
-            Don’t have an account?<Link className="text-blue-500 relative after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-[2px] after:bg-blue-500 after:transition-all after:duration-300" to="/signup">register now </Link>
+            </div>
+            Don’t have an account?<Link className="text-blue-500 relative after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-[2px] after:bg-[#7d73e1] after:transition-all after:duration-300" to="/signup">register now </Link>
           </div>
         </form>
         <p className="mt-4 text-center text-red-500">{message}</p>
