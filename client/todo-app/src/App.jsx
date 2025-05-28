@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import './App.css';
 import Signup from "./components/SignUp";
 import Signin from "./components/SignIn";
@@ -17,9 +17,9 @@ function App() {
          <Route path="/signin" element={<Signin/>} />
         <Route path="/" element={<RootRouteHandler />}>
           
-
-            <Route path="/roadmapai" element={<RoadMapAI/>} />
+            <Route index element={<Navigate to="/todo" replace />} />
             <Route path="/todo" element={<TodoPage />} />
+            <Route path="/roadmapai" element={<RoadMapAI/>} />
             {/* <Route path="/home" element={<HomePage/>} />
             <Route path="/goal" element={<GoalPage/>} />
             

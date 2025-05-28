@@ -145,10 +145,10 @@ const RoadMapAI = () => {
 
   return (
     <div className="max-w-xl mx-auto p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-xl font-bold text-gray-600">Roadmap AI Chat</h1>
+      <div className="flex justify-center items-center mb-4">
+        <h1 className="text-xl font-bold text-gray-600">Roadmap <span>AI</span></h1>
         <div
-          className="px-3 py-1 text-sm bg-gradient-to-r from-[#FD6A5E] to-[#FF8A7A] text-white rounded-lg hover:bg-[#b84f4f] hover:cursor-pointer"
+          className="px-3 py-1 sm:py-2 h-10 text-xs sm:text-sm text-white rounded-lg bg-gradient-to-r from-[#FD6A5E] to-[#FF8A7A] hover:bg-[#ff9f91] hover:cursor-pointer"
           onClick={startNewChat}
         >
           New Chat

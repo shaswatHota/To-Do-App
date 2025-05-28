@@ -1,6 +1,5 @@
 
 import LandingPage from "../Pages/LandingPage";
-import TodoPage from "../Pages/TodoPage";
 import PageSkeleton from "./PageSkeleton";
 
 const RootRouteHandler = () => {
