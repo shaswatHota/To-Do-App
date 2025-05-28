@@ -159,7 +159,7 @@ const RoadMapAI = () => {
 
         {messages.length === 0 && (
         <div className="flex-grow flex justify-center items-center">
-          <h2 className="text-2xl text-gray-400 pt-24">What do you want to learn today?</h2>
+          <h2 className="text-2xl text-gray-400 pt-24"><span>What do you want to</span> <span className="text-red-300">learn</span> <span>today?</span></h2>
         </div>
         )}
 
