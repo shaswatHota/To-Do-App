@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import RefreshIcon from '@mui/icons-material/Refresh';
+import { AiOutlineLoading } from "react-icons/ai";
 
 const Signin = () => {
   const [email, setEmail] = useState("");
@@ -14,28 +14,31 @@ const Signin = () => {
     e.preventDefault();
     setLoading(true);
     try{
-        setLoading(false);
-        const res = await axios.post("http://localhost:3000/signin",{email, password});
+       
+        const res = await axios.post("https://todo-app-theta-azure.vercel.app/signin",{email, password});
         const token = res.data.token;
        if(token){
         localStorage.setItem('token', token);
         navigate('/todo');
+        console.log(token);
         setMessage('Signin successful');
        }else{
         setMessage('Signin failed , no token found')
        }
 
-
+       
     }catch(err){
         setMessage("Signin failed")
     }
-    
+     finally {
+    setLoading(false); 
+  }
   };
 
   return (
     <div className="h-screen w-screen flex justify-center items-center bg-gray-100">
       <div className="w-full max-w-sm p-6 bg-white shadow-lg rounded-lg">
-        <h2 className="text-center text-2xl text-black font-semibold mb-4">Sign In</h2>
+        <h2 className="text-center text-2xl text-black font-semibold mb-4 ">Sign In</h2>
         <form onSubmit={handleSignIn}>
           <div className="space-y-4 text-black">
             <input
@@ -58,9 +61,9 @@ const Signin = () => {
               onClick={handleSignIn}
             >
               {loading ? (
-                <RefreshIcon className="animate-spin"/> 
+                <AiOutlineLoading  className="animate-spin text-white text-xl mr-2"/> 
               ) : (
-                "SignIn"
+                "Sign In"
               )}
              
             </div>

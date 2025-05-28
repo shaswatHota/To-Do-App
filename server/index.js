@@ -38,6 +38,10 @@ app.post('/signup',async function(req, res) {
     const email = req.body.email;
     const password = req.body.password;
 
+    if (!username || !email || !password) {
+    return res.status(400).json({ message: 'All fields are required (username, email, password)' });
+  }
+
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'Email is already in use' });
