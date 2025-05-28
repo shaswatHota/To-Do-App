@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose')
 const app = express();
 const cors = require('cors');
+require("dotenv").config();
 const {UserModel, TodoModel} = require("./db");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = "sh@sw@th04a";
@@ -9,8 +10,7 @@ const bcryptjs = require('bcryptjs');
 const { authenticateJwt } = require('./middleware/auth');
 const geminiRoutes = require('./routes/gemini');
 
-mongoose.connect('mongodb+srv://admin:DglBOA6An0PTKfEc@cluster0.3o1o3.mongodb.net/todo-app-database')
-
+mongoose.connect(process.env.MONGODB_CONNECTION_STRING)
 
 app.use(cors());
 app.use(express.json()); 
