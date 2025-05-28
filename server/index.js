@@ -19,6 +19,19 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/me', authenticateJwt, async (req, res) => {
+    try {
+        const user = await UserModel.findById(req.user.id).select('username email');
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        res.json(user);
+    } catch (err) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+
 app.post('/signup',async function(req, res) {
 
     const username = req.body.username;
@@ -30,7 +43,6 @@ app.post('/signup',async function(req, res) {
       return res.status(400).json({ message: 'Email is already in use' });
     }
 
-    // Hash the password before saving
     const hashedPassword = await bcryptjs.hash(password, 10);
 
 
@@ -72,6 +84,7 @@ app.post('/signin', async function (req, res) {
 
 app.get('/todo', authenticateJwt,async(req,res)=> {
     try {
+        
         const todos = await TodoModel.find({ userId: req.user.id }); // ✅ Only this user's todos
         res.json(todos);
       } catch (error) {
@@ -81,14 +94,13 @@ app.get('/todo', authenticateJwt,async(req,res)=> {
 
 app.post('/todo', authenticateJwt, async(req, res) => {
     try {
-        const { text } = req.body;
+        const { text, description, priority } = req.body;
         const newTodo = await TodoModel.create({
             text,
+            description,
+            priority,
             completed: false,
-            favorite: false,
-            important: false,
-            optional: false,
-            userId: req.user.id // ✅ Correct: Uses the logged-in user's _id from JWT
+            userId: req.user.id 
         });
         res.json(newTodo);
     } catch (error) {
@@ -130,7 +142,7 @@ app.patch('/complete/:id', authenticateJwt,async (req, res) => {
         const { id } = req.params;
         const todo = await TodoModel.findOne({ 
           _id: id, 
-          userId: req.user.id // ✅ Verify the todo belongs to the user
+          userId: req.user.id 
         });
         if (!todo) return res.status(404).json({ error: "Todo not found" });
     
@@ -143,7 +155,7 @@ app.patch('/complete/:id', authenticateJwt,async (req, res) => {
       }
 });
 
-// ✅ Toggle only `favorite`
+
 app.patch('/favorite/:id',authenticateJwt, async(req, res) => {
     try {
         const { id } = req.params;

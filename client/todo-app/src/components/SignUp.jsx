@@ -6,7 +6,7 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);  // State to handle loading
+  const [loading, setLoading] = useState(false); 
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
@@ -22,7 +22,7 @@ const Signup = () => {
   
       const data = await res.json();
       if (res.ok) {
-        setMessage(data.message); // "Account created successfully!"
+        setMessage(data.message); 
         setLoading(false);
         navigate('/signin');
       } else {
@@ -36,11 +36,18 @@ const Signup = () => {
   
 
   return (
-    <div className="h-screen flex justify-center items-center bg-gray-100 text-black">
+    <div className="h-screen w-screen flex justify-center items-center bg-gray-100 text-black">
       <div className="w-full max-w-sm p-6 bg-white shadow-lg rounded-lg">
         <h2 className="text-center text-2xl font-semibold mb-4">Sign Up</h2>
         <form onSubmit={handleSignup}>
           <div className="space-y-4">
+            <input
+              type="username"
+              placeholder="Username"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full p-2 border border-gray-300 rounded"
+            />
             <input
               type="email"
               placeholder="Email"
@@ -55,18 +62,19 @@ const Signup = () => {
               required
               className="w-full p-2 border border-gray-300 rounded"
             />
-            <button
+            <div
               type="submit"
-              className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              disabled={loading}  // Disable button while loading
+              className=" flex justify-center w-full p-2 hover:cursor-pointer text-white rounded bg-gradient-to-r from-[#FD6A5E] to-[#FF8A7A]"
+              disabled={loading}  
+              onClick={handleSignup}
             >
               {loading ? (
-                <RefreshIcon className="animate-spin"/> // Spinner icon while loading
+                <RefreshIcon className="animate-spin"/> 
               ) : (
                 "Sign Up"
               )}
-            </button>
-            already have an account? <Link className="text-blue-500 relative after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-[2px] after:bg-blue-500 after:transition-all after:duration-300" to="/signin">Login </Link>
+            </div>
+            already have an account? <Link className="text-blue-500 relative after:absolute after:bottom-0 after:left-0 after:w-0 hover:after:w-full after:h-[2px] after:bg-[#7d73e1] after:transition-all after:duration-300" to="/signin">Login </Link>
           </div>
         </form>
         <p className="mt-4 text-center text-red-500">{message}</p>
