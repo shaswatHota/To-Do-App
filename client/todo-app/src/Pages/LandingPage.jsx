@@ -19,7 +19,7 @@ export default function LandingPage() {
           <div className="w-8 h-8 bg-gradient-to-br from-[#FD6A5E] to-[#FF8A7A] rounded-lg flex items-center justify-center">
             <Calendar className="w-5 h-5 text-white" />
           </div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-[#FD6A5E] to-[#FF8A7A] bg-clip-text text-transparent">TaskMate</h1>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-[#FD6A5E] to-[#FF8A7A] bg-clip-text text-transparent">Todom</h1>
         </div>
          <div className="hidden md:flex items-center gap-6">
           <div className="text-gray-500 hover:text-gray-700 transition-colors hover:cursor-pointer">Features</div>
@@ -256,7 +256,7 @@ export default function LandingPage() {
                 <div className="w-8 h-8 bg-gradient-to-br from-[#FD6A5E] to-[#FF8A7A] rounded-lg flex items-center justify-center">
                   <Calendar className="w-5 h-5 text-white" />
                 </div>
-                <h4 className="text-xl font-bold">TaskMate</h4>
+                <h4 className="text-xl font-bold">Todom</h4>
               </div>
               <p className="text-gray-400">
                 The smart way to manage tasks and achieve your goals.
