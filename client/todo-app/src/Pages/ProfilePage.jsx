@@ -33,7 +33,7 @@ const ProfilePage = () => {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:3000/me", {
+        const response = await axios.get("https://todo-app-theta-azure.vercel.app/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

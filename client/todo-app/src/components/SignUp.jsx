@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link,useNavigate } from "react-router-dom";
-import RefreshIcon from '@mui/icons-material/Refresh';
+import { AiOutlineLoading } from "react-icons/ai";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -14,7 +14,7 @@ const Signup = () => {
     setLoading(true);
   
     try {
-      const res = await fetch('http://localhost:3000/signup', {
+      const res = await fetch('https://todo-app-theta-azure.vercel.app/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -31,7 +31,9 @@ const Signup = () => {
     } catch (err) {
       setLoading(false);
       setMessage(err.message);
-    }
+    }  finally {
+    setLoading(false); 
+  }
   };
   
 
@@ -69,7 +71,7 @@ const Signup = () => {
               onClick={handleSignup}
             >
               {loading ? (
-                <RefreshIcon className="animate-spin"/> 
+                <AiOutlineLoading  className="animate-spin text-white text-xl mr-2"/> 
               ) : (
                 "Sign Up"
               )}

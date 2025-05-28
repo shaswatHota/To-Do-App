@@ -71,7 +71,7 @@ const RoadMapAI = () => {
 
     try {
       const newEventSource = new EventSource(
-        `http://localhost:3000/api/gemini/roadmapai?token=${token}&chatId=${chatId}` //future note:- sending tokens in quary param may compromize security
+        `https://todo-app-theta-azure.vercel.app/api/gemini/roadmapai?token=${token}&chatId=${chatId}` //future note:- sending tokens in quary param may compromize security
       );
 
       setEventSource(newEventSource);
