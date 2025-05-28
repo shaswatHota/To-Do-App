@@ -266,7 +266,7 @@ function TodoPage() {
         
         <div className={`${isMobile ? 'order-2 w-full' : 'w-1/2 flex flex-col gap-6'}`}>
           <section className={`${isMobile ? 'order-2' : ''} bg-white rounded-xl shadow p-6 flex flex-col items-center mb-6`}>
-            <div className=" pr-98 font-bold text-red-400 text-lg mb-4">Task Status</div>
+            <div className=" font-bold text-red-400 text-lg mb-4">Task Status</div>
             <div className="flex flex-col gap-4 w-full">
               <div className="flex items-center gap-3">
                 <span className="w-3 h-3 rounded-full bg-green-500 inline-block"></span>

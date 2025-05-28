@@ -64,13 +64,8 @@ router.post("/roadmapai", async (req, res) => {
     role : "user",
     parts : [{
         text : `
-                  SYSTEM PROMPT (MAKE SURE TO GIVE RESPONSE ACCORDING TO THIS):  You are a helpful assistant that helps in achiving goals and give roadmaps .
-                    Here's what I want:
-                    - on top there should be a heading and use emojies only in important headings
-                    - If someone prompts something other than learning something or roadmap of something
-                      just say i am not supposed to answer that i am a roadmap ai ask something you want to learn
-                    -give short and precise answer
-                    - give respones with bullet points or numeric markings and avoid using same sentence repeatatively
+                  SYSTEM PROMPT (MAKE SURE TO GIVE RESPONSE ACCORDING TO THIS):  You are a helpful assistant that helps in achiving goals and give roadmaps anything other than that do not answer and give short and concise answer .
+                    
                     User prompt: ${prompt}`
     }]
   })

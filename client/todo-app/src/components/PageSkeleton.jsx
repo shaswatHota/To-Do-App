@@ -8,7 +8,7 @@ function PageSkeleton() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Function to check screen size and update mobile state
+    
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
@@ -19,13 +19,13 @@ function PageSkeleton() {
       }
     };
 
-    // Set initial state based on screen size
+    
     handleResize();
 
-    // Add event listener for window resize
+
     window.addEventListener('resize', handleResize);
 
-    // Clean up the event listener
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -51,7 +51,7 @@ function PageSkeleton() {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Sidebar toggle button - fixed top-left */}
+       
         <div
           onClick={toggleSidebar}
           className={`fixed top-5 left-5 z-50 p-2 rounded text-[#ffffff] hover:text-[#c4c4c4] cursor-pointer`}
