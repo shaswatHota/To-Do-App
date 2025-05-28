@@ -62,7 +62,7 @@ const Sidebar = () => {
       </ul>
       {/* Logout Button */}
       <div className="mt-auto pt-8">
-        <div className="flex items-center gap-2 px-4 py-7 rounded-lg bg-white/20 text-white hover:bg-white/30 cursor-pointer font-semibold" onClick={logoutFunc}>
+        <div className="flex items-center gap-2 px-4 py-3 mb-5 rounded-lg bg-white/20 text-white hover:bg-white/30 cursor-pointer font-semibold" onClick={logoutFunc}>
           <span className="material-icons text-lg" ><IoIosLogOut/></span>
           Logout
         </div>
