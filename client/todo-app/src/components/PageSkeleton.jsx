@@ -54,7 +54,7 @@ function PageSkeleton() {
        
         <div
           onClick={toggleSidebar}
-          className={`fixed top-5 left-5 z-50 p-2 rounded text-[#ffffff] hover:text-[#c4c4c4] cursor-pointer`}
+          className={`fixed top-3 left-3 z-50 p-2 rounded text-[#ffffff] hover:text-[#c4c4c4] cursor-pointer`}
           aria-label="Toggle Sidebar"
         >
           {isOpen ? (
