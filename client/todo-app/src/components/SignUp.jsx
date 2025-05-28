@@ -17,7 +17,7 @@ const Signup = () => {
       const res = await fetch('https://todo-app-theta-azure.vercel.app/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username,email, password }),
       });
   
       const data = await res.json();
