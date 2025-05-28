@@ -1,73 +1,83 @@
 // routes/gemini.js
 const express = require("express");
 const router = express.Router();
+const mongoose = require('mongoose');
 require("dotenv").config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { ChatModel } = require("../db");
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash",
 
    generationConfig: {
-    temperature: 0.8, // ✅ Correct placement
+    temperature: 1.2, 
 
   },
  });
 
 const userSSEConnections = new Map();
 
-// SSE GET endpoint
-router.get("/roadmapai", (req, res) => {
+//in sse ,get endpoint should be written first to establish the connection first so that the post end point can stream data to the frontend
+router.get("/roadmapai", async(req, res) => {
   const userId = req.user.id;
+  
 
+  
    console.log(`📥 [${userId}] Connected to SSE`);
 
-  // Set headers for SSE
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
-  // Keep the connection alive and send the data in real-time
-  res.flushHeaders();
+  res.flushHeaders();//realtime data sending (it keeps the connection alive)
 
   userSSEConnections.set(userId,res);
   console.log("connection is set");
 
-  // Clean up connections when the client closes
    req.on("close", () => {
     console.log(`❌ [${userId}] SSE connection closed`);
     userSSEConnections.delete(userId);
+    console.log("connection is closed");
   });
-  console.log("connection is closed");
+  
 });
 router.post("/roadmapai", async (req, res) => {
-  const userId = req.user.id;  // Make sure req.user is not undefined
+  const userId = req.user.id;  
   console.log(`📥 [${userId}]`);
   
-  const { prompt } =req.body;
+  const { prompt,chatId } =req.body;
+
+   const finalChatId = chatId || new mongoose.Types.ObjectId().toString();
+
+   const previousMessages = await ChatModel.find({ userId, chatId: finalChatId })
+    .sort({ timestamp: 1 })
+    .limit(10);
+    const context = previousMessages.map((msg) => ({
+    role: msg.role === "user" ? "user" : "model",
+    parts: msg.parts.map((p) => ({ text: p.text })),
+     }));
+
+
   console.log(`📥 [${userId}] Prompt received: ${prompt}`);
-  const sysPrompt = `
-                    You are a helpful assistant that returns structured, readable responses.
-                    Please format your answer in Markdown, and use emoji in some headers 
-                    and talk as much like a human as possible . 
-                    dont give answers like this all the time , do so if necessary 
-                    you can deviate from the structure and do your own thing if you want.
-                    use emoji according to a 
-                    particular color pallet.
-                
+
+  context.push({
+
+    role : "user",
+    parts : [{
+        text : `
+                  SYSTEM PROMPT (MAKE SURE TO GIVE RESPONSE ACCORDING TO THIS):  You are a helpful assistant that helps in achiving goals and give roadmaps .
                     Here's what I want:
-                    - Add an optional title if it helps.
-                    - Use bold text (**) for key points.
-                    - Use bullet points or numbered lists when listing.
-                    - Add headers using Markdown syntax (like ## or ###) when needed.
-                    - Do not cut off sentences.
+                    - on top there should be a heading and use emojies only in important headings
                     - If someone prompts something other than learning something or roadmap of something
                       just say i am not supposed to answer that i am a roadmap ai ask something you want to learn
-
-                    User prompt: ${prompt}`;
-
+                    -give short and precise answer
+                    - give respones with bullet points or numeric markings and avoid using same sentence repeatatively
+                    User prompt: ${prompt}`
+    }]
+  })
   
     const result = await model.generateContentStream({
-      contents: [{ role: "user", parts: [{ text: sysPrompt }] }],
+      contents: context,
     });
     const clientRes = userSSEConnections.get(userId);
     if(!clientRes){
@@ -77,20 +87,75 @@ router.post("/roadmapai", async (req, res) => {
 
   try{
 
+    let fullresponse = ''
+
       for await(const chunk of result.stream){
         const textPart = chunk.text(); 
-        clientRes.write(`data: ${JSON.stringify({ roadmap: textPart })}\n\n`);
+        fullresponse += textPart;
+        clientRes.write(`data: ${JSON.stringify({ roadmap: fullresponse })}\n\n`);
       }
-      clientRes.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+
+      clientRes.write(`data: ${JSON.stringify({ done: true, chatId : finalChatId })}\n\n`);
       clientRes.end();
     
   } catch (error) {
-     console.error("❌ Streaming error:", err);
+     console.error("❌ Streaming error:", error);
     clientRes.write(`data: ${JSON.stringify({ error: "Streaming failed" })}\n\n`);
     clientRes.end();
   }
 });
 
+// Get chat history for a chatId
+router.get("/roadmapai/history", async (req, res) => {
+  const userId = req.user.id;
+  const { chatId } = req.query;
+  if (!chatId) return res.status(400).json({ error: "chatId required" });
 
+  try {
+    const messages = await ChatModel.find({ userId, chatId }).sort({ timestamp: 1 });
+    // Format for frontend
+    const formatted = messages.map(msg => ({
+      role: msg.role,
+      text: msg.parts.map(p => p.text).join("")
+    }));
+    res.json({ messages: formatted });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch chat history" });
+  }
+});
+
+// Save a single message to chat history
+router.post("/roadmapai/save", async (req, res) => {
+  const userId = req.user.id;
+  const { chatId, message } = req.body;
+  if (!chatId || !message || !message.role || !message.text)
+    return res.status(400).json({ error: "chatId and message (role, text) required" });
+
+  try {
+    await ChatModel.create({
+      userId,
+      chatId,
+      role: message.role,
+      parts: [{ text: message.text }],
+    });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to save message" });
+  }
+});
+
+// Delete all messages for a chatId
+router.delete("/roadmapai/history", async (req, res) => {
+  const userId = req.user.id;
+  const { chatId } = req.query;
+  if (!chatId) return res.status(400).json({ error: "chatId required" });
+
+  try {
+    await ChatModel.deleteMany({ userId, chatId });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete chat history" });
+  }
+});
 
 module.exports = router;
