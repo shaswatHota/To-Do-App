@@ -3,6 +3,7 @@ import { Link,useNavigate } from "react-router-dom";
 import { AiOutlineLoading } from "react-icons/ai";
 
 const Signup = () => {
+  const [username,setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -44,9 +45,9 @@ const Signup = () => {
         <form onSubmit={handleSignup}>
           <div className="space-y-4">
             <input
-              type="username"
+              value={username}
               placeholder="Username"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               required
               className="w-full p-2 border border-gray-300 rounded"
             />
