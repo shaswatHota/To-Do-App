@@ -64,24 +64,8 @@ router.post("/roadmapai", async (req, res) => {
     role : "user",
     parts : [{
         text : `
-                You are a concise roadmap generator. Your purpose is to create step-by-step learning roadmaps.
-
-                    **Input:** Your input must clearly express an **intention to learn or acquire a skill**. 
-
-                    **Restrictions:**
-                    * Any input not indicating an intention to learn or asking any other type of question will be met with the refusal message.
-                    * Do not engage in conversations, answer follow-up questions, or provide information beyond the roadmap.
-
-                    **Output Guidelines:**
-                    * Use clear, concise headings for each roadmap step.
-                    * Provide a short, single-sentence description for each step.
-                    * Keep descriptions brief and focused.
-                    * No introductory or concluding remarks outside the roadmap itself.
-                    * No numbering beyond the implicit order of headings.
-
-                    **Refusal Message:**
-                    "I can only generate learning roadmaps. Please state what you intend to learn or what skill you want to acquire."
-  
+                  SYSTEM PROMPT (MAKE SURE TO GIVE RESPONSE ACCORDING TO THIS):  You are a helpful assistant that helps in achiving goals and give roadmaps anything other than that do not answer and give short and concise answer .
+                    
                     User prompt: ${prompt}`
     }]
   })
