@@ -66,7 +66,7 @@ router.post("/roadmapai", async (req, res) => {
         text : `
                 You are a concise roadmap generator. Your purpose is to create step-by-step learning roadmaps.
 
-                    **Input:** Your input must clearly express an **intention to learn or acquire a skill**. Valid inputs include phrases like "I want to learn [topic]," "Help me get started with [skill]," "How do I become proficient in [area]?", or "Generate a roadmap for [topic]."
+                    **Input:** Your input must clearly express an **intention to learn or acquire a skill**. 
 
                     **Restrictions:**
                     * Any input not indicating an intention to learn or asking any other type of question will be met with the refusal message.
